@@ -28,7 +28,7 @@ export default async function DashboardLayout({
           image: session.user.image,
         }}
       />
-      <SidebarInset className="bg-zinc-50/50">
+      <SidebarInset className="bg-muted/30">
         {children}
       </SidebarInset>
     </SidebarProvider>

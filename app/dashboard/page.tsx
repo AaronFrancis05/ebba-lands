@@ -1,37 +1,35 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
-import Link from "next/link";
 import {
-  Search,
-  ShoppingCart,
-  Clock,
-  Star,
-  Utensils,
+  TrendingUp,
+  TrendingDown,
+  DollarSign,
   CreditCard,
-  MessageSquare,
-  History,
-  LayoutDashboard,
-  LogOut,
-  Plus,
-  Minus,
-  CheckCircle2,
-  MapPin,
+  Activity,
+  Users,
+  HelpCircle,
+  Search,
+  Download,
+  Filter,
+  MoreHorizontal,
+  Globe,
+  Mail,
+  Share2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
-  CardFooter,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
+import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Separator } from "@/components/ui/separator";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Table,
   TableBody,
@@ -40,486 +38,446 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { LogoutButton } from "@/components/auth/logout-button";
 
-// Mock Data
-const categories = ["All", "Main Course", "Appetizers", "Desserts", "Drinks"];
+const stats = [
+  {
+    title: "Total Sales",
+    value: "$18,200",
+    change: "+10.2%",
+    trend: "up",
+    description: "vs last month",
+  },
+  {
+    title: "Operating Expenses",
+    value: "$18,200",
+    change: "-5.75%",
+    trend: "down",
+    description: "vs last month",
+  },
+  {
+    title: "Gross Profit",
+    value: "$18,200",
+    change: "+8.65%",
+    trend: "up",
+    description: "vs last month",
+  },
+];
 
-const menuItems = [
+const sourceData = [
+  { name: "Website", value: 5846, percentage: 65, color: "bg-primary" },
+  { name: "Social Media", value: 2490, percentage: 20, color: "bg-blue-400" },
+  { name: "Email", value: 1857, percentage: 10, color: "bg-violet-400" },
+  { name: "Referral", value: 1245, percentage: 5, color: "bg-orange-400" },
+];
+
+const revenueData = [
+  { month: "Jan", revenue: 8000 },
+  { month: "Feb", revenue: 12000 },
+  { month: "Mar", revenue: 15000 },
+  { month: "April", revenue: 18000 },
+  { month: "May", revenue: 28000 },
+  { month: "Jun", revenue: 22000 },
+  { month: "July", revenue: 19000 },
+  { month: "Aug", revenue: 16000 },
+  { month: "Sep", revenue: 14000 },
+];
+
+const salesData = [
   {
     id: 1,
-    name: "Truffle Mushroom Pasta",
-    price: 24,
-    category: "Main Course",
-    image: "https://images.unsplash.com/photo-1473093226795-af9932fe5856?q=80&w=500&auto=format&fit=crop",
-    description: "Creamy pasta with wild mushrooms and truffle oil.",
-    rating: 4.8,
+    dealName: "Bargain Bonanza",
+    company: "Amazon.com, Inc",
+    companyLogo: "A",
+    price: "$850,000.00",
+    dateCreated: "Mon, 12 April 2025",
+    owner: "Jenny Wilson",
+    ownerAvatar: "JW",
+    stage: "New",
   },
   {
     id: 2,
-    name: "Grilled Salmon Steak",
-    price: 29,
-    category: "Main Course",
-    image: "https://images.unsplash.com/photo-1467003909585-2f8a72700288?q=80&w=500&auto=format&fit=crop",
-    description: "Fresh Atlantic salmon served with seasonal vegetables.",
-    rating: 4.9,
+    dealName: "Discount Delights",
+    company: "Xiaomi Corporation",
+    companyLogo: "X",
+    price: "$990,000.00",
+    dateCreated: "Mon, 11 April 2025",
+    owner: "Leslie Alexander",
+    ownerAvatar: "LA",
+    stage: "New",
   },
   {
     id: 3,
-    name: "Wagyu Beef Burger",
-    price: 22,
-    category: "Main Course",
-    image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?q=80&w=500&auto=format&fit=crop",
-    description: "Premium wagyu beef with caramelized onions and brie.",
-    rating: 4.7,
-  },
-  {
-    id: 4,
-    name: "Berry Cheesecake",
-    price: 12,
-    category: "Desserts",
-    image: "https://images.unsplash.com/photo-1533134242443-d4fd215305ad?q=80&w=500&auto=format&fit=crop",
-    description: "Rich New York style cheesecake with fresh berries.",
-    rating: 4.6,
-  },
-  {
-    id: 5,
-    name: "Crispy Calamari",
-    price: 16,
-    category: "Appetizers",
-    image: "https://images.unsplash.com/photo-1599487488170-d11ec9c172f0?q=80&w=500&auto=format&fit=crop",
-    description: "Lightly battered squid with spicy aioli.",
-    rating: 4.5,
-  },
-  {
-    id: 6,
-    name: "Iced Caramel Macchiato",
-    price: 6,
-    category: "Drinks",
-    image: "https://images.unsplash.com/photo-1485808191679-5f86510681a2?q=80&w=500&auto=format&fit=crop",
-    description: "Rich espresso with velvety milk and caramel drizzle.",
-    rating: 4.8,
-  },
-];
-
-const previousOrders = [
-  {
-    id: "ORD-7392",
-    date: "2026-03-10",
-    items: "Wagyu Beef Burger, Berry Cheesecake",
-    total: 34.0,
-    status: "Delivered",
-  },
-  {
-    id: "ORD-6215",
-    date: "2026-03-05",
-    items: "Truffle Mushroom Pasta",
-    total: 24.0,
-    status: "Delivered",
-  },
-  {
-    id: "ORD-5102",
-    date: "2026-02-28",
-    items: "Grilled Salmon Steak, Iced Caramel Macchiato",
-    total: 35.0,
-    status: "Delivered",
-  },
-];
-
-const currentOrders = [
-  {
-    id: "ORD-8421",
-    date: "2026-03-15",
-    items: "Grilled Salmon Steak, Crispy Calamari",
-    total: 45.0,
-    status: "Preparing",
-    estimatedArrival: "25 mins",
+    dealName: "Price Slayers",
+    company: "Apple, Inc",
+    companyLogo: "A",
+    price: "$450,000.00",
+    dateCreated: "Mon, 11 April 2025",
+    owner: "Cody Fisher",
+    ownerAvatar: "CF",
+    stage: "New",
   },
 ];
 
 export default function DashboardPage() {
-  const [activeCategory, setActiveCategory] = useState("All");
-  const [cart, setCart] = useState<{ id: number; quantity: number }[]>([]);
-  const [isPaying, setIsPaying] = useState(false);
-
-  const filteredItems = menuItems.filter(
-    (item) => activeCategory === "All" || item.category === activeCategory
-  );
-
-  const addToCart = (id: number) => {
-    setCart((prev) => {
-      const existing = prev.find((item) => item.id === id);
-      if (existing) {
-        return prev.map((item) =>
-          item.id === id ? { ...item, quantity: item.quantity + 1 } : item
-        );
-      }
-      return [...prev, { id, quantity: 1 }];
-    });
-  };
-
-  const removeFromCart = (id: number) => {
-    setCart((prev) => {
-      const existing = prev.find((item) => item.id === id);
-      if (existing?.quantity === 1) {
-        return prev.filter((item) => item.id !== id);
-      }
-      return prev.map((item) =>
-        item.id === id ? { ...item, quantity: item.quantity - 1 } : item
-      );
-    });
-  };
-
-  const cartTotal = cart.reduce((acc, item) => {
-    const menuItem = menuItems.find((m) => m.id === item.id);
-    return acc + (menuItem?.price || 0) * item.quantity;
-  }, 0);
-
-  const handlePayment = () => {
-    setIsPaying(true);
-    setTimeout(() => {
-      setIsPaying(false);
-      setCart([]);
-      alert("Payment successful! Your order is being prepared.");
-    }, 2000);
-  };
+  const [selectedTab, setSelectedTab] = useState("overview");
+  const maxRevenue = Math.max(...revenueData.map((d) => d.revenue));
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col min-h-screen">
       {/* Header */}
-      <header className="h-16 border-b bg-white/80 backdrop-blur-md px-6 flex items-center justify-between sticky top-0 z-20">
-        <h1 className="text-lg font-semibold">Welcome back, Diner!</h1>
+      <header className="flex h-16 items-center justify-between border-b bg-background px-6">
         <div className="flex items-center gap-4">
-          <div className="relative hidden sm:block">
-            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-            <Input
-              placeholder="Search your favorite food..."
-              className="pl-8 w-[300px] h-9 bg-zinc-50"
-            />
-          </div>
-          <Button variant="outline" size="icon" className="relative">
-            <ShoppingCart className="h-4 w-4" />
-            {cart.length > 0 && (
-              <span className="absolute -top-1 -right-1 bg-orange-600 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center">
-                {cart.reduce((acc, item) => acc + item.quantity, 0)}
-              </span>
-            )}
+          <SidebarTrigger className="-ml-2" />
+          <Separator orientation="vertical" className="h-6" />
+          <h1 className="text-xl font-semibold">Dashboard</h1>
+        </div>
+        <div className="flex items-center gap-4">
+          <Button variant="ghost" size="icon">
+            <HelpCircle className="h-5 w-5 text-muted-foreground" />
           </Button>
+          <Button variant="ghost" size="icon">
+            <Search className="h-5 w-5 text-muted-foreground" />
+          </Button>
+          <div className="flex -space-x-2">
+            <Avatar className="h-8 w-8 border-2 border-background">
+              <AvatarFallback className="bg-orange-100 text-orange-600 text-xs">
+                JD
+              </AvatarFallback>
+            </Avatar>
+            <Avatar className="h-8 w-8 border-2 border-background">
+              <AvatarFallback className="bg-blue-100 text-blue-600 text-xs">
+                AB
+              </AvatarFallback>
+            </Avatar>
+            <Avatar className="h-8 w-8 border-2 border-background">
+              <AvatarFallback className="bg-green-100 text-green-600 text-xs">
+                CD
+              </AvatarFallback>
+            </Avatar>
+          </div>
+          <LogoutButton variant="outline" size="sm" />
         </div>
       </header>
 
-      <div className="p-6 space-y-6">
-        <Tabs defaultValue="menu" className="space-y-6">
-          <TabsList className="bg-zinc-100 p-1">
-            <TabsTrigger value="menu">Master Menu</TabsTrigger>
-            <TabsTrigger value="orders">My Orders</TabsTrigger>
-            <TabsTrigger value="contact">Contact Us</TabsTrigger>
-          </TabsList>
+      {/* Main Content */}
+      <main className="flex-1 p-6 space-y-6">
+        {/* Tabs */}
+        <div className="flex items-center justify-between">
+          <Tabs value={selectedTab} onValueChange={setSelectedTab}>
+            <TabsList className="bg-muted/50">
+              <TabsTrigger value="overview">Overview</TabsTrigger>
+              <TabsTrigger value="sales">Sales</TabsTrigger>
+              <TabsTrigger value="order">Order</TabsTrigger>
+              <TabsTrigger value="report">Report</TabsTrigger>
+            </TabsList>
+          </Tabs>
+          <div className="flex items-center gap-2">
+            <Button variant="outline" size="sm">
+              <Filter className="h-4 w-4 mr-2" />
+              Filter
+            </Button>
+            <Button size="sm" className="bg-orange-500 hover:bg-orange-600">
+              <Download className="h-4 w-4 mr-2" />
+              Export
+            </Button>
+          </div>
+        </div>
 
-          {/* Menu Tab */}
-          <TabsContent value="menu" className="space-y-8 mt-0 outline-none">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-              <div>
-                <h2 className="text-2xl font-bold font-serif">Master Menu</h2>
-                <p className="text-muted-foreground text-sm">Select from our delicious range of dishes.</p>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {categories.map((cat) => (
-                  <Button
-                    key={cat}
-                    variant={activeCategory === cat ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => setActiveCategory(cat)}
-                    className={activeCategory === cat ? "bg-orange-600 hover:bg-orange-700" : ""}
-                  >
-                    {cat}
-                  </Button>
-                ))}
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
-              {/* Menu Items Grid */}
-              <div className="xl:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
-                {filteredItems.map((item) => (
-                  <Card key={item.id} className="overflow-hidden group flex flex-col border-zinc-200">
-                    <div className="relative aspect-video overflow-hidden">
-                      <Image
-                        src={item.image}
-                        alt={item.name}
-                        fill
-                        className="object-cover group-hover:scale-105 transition-transform duration-500"
-                      />
-                    </div>
-                    <CardHeader className="p-4 flex-1">
-                      <div className="flex items-center justify-between mb-1">
-                        <Badge variant="secondary" className="text-[10px] bg-orange-50 text-orange-700 border-none">
-                          {item.category}
-                        </Badge>
-                        <div className="flex items-center gap-1 text-xs font-bold text-orange-500">
-                          <Star className="h-3 w-3 fill-current" />
-                          {item.rating}
+        {/* Stats Cards */}
+        <div className="grid gap-4 md:grid-cols-3">
+          {stats.map((stat) => (
+            <Card key={stat.title} className="bg-background">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium text-muted-foreground">
+                      {stat.title}
+                    </p>
+                    <div className="flex items-center gap-3 mt-2">
+                      <p className="text-2xl font-bold">{stat.value}</p>
+                      <div className="flex items-center gap-1">
+                        <div className="flex gap-0.5">
+                          {[1, 2, 3, 4, 5].map((i) => (
+                            <div
+                              key={i}
+                              className={`w-1 rounded-full ${
+                                i <= 3 ? "bg-primary" : "bg-muted"
+                              }`}
+                              style={{ height: `${8 + i * 3}px` }}
+                            />
+                          ))}
                         </div>
                       </div>
-                      <CardTitle className="text-lg">{item.name}</CardTitle>
-                      <CardDescription className="line-clamp-2 text-xs">
-                        {item.description}
-                      </CardDescription>
-                    </CardHeader>
-                    <CardFooter className="p-4 pt-0 flex items-center justify-between">
-                      <span className="text-lg font-bold text-orange-600">${item.price}</span>
-                      <Button
-                        size="sm"
-                        onClick={() => addToCart(item.id)}
-                        className="bg-zinc-900 hover:bg-zinc-800 text-white"
+                    </div>
+                    <div className="flex items-center gap-1 mt-2">
+                      <Badge
+                        variant="secondary"
+                        className={`text-xs ${
+                          stat.trend === "up"
+                            ? "bg-green-100 text-green-700"
+                            : "bg-red-100 text-red-700"
+                        }`}
                       >
-                        <Plus className="h-4 w-4 mr-1" /> Add
-                      </Button>
-                    </CardFooter>
-                  </Card>
-                ))}
-              </div>
-
-              {/* Cart/Checkout Section */}
-              <div className="xl:col-span-1">
-                <Card className="sticky top-24 border-orange-100 shadow-xl overflow-hidden">
-                  <CardHeader className="bg-orange-600 text-white py-4">
-                    <CardTitle className="flex items-center gap-2 text-lg">
-                      <ShoppingCart className="h-5 w-5" />
-                      Your Order
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="p-6">
-                    {cart.length === 0 ? (
-                      <div className="text-center py-8">
-                        <p className="text-muted-foreground italic">Your cart is empty.</p>
-                        <p className="text-xs text-muted-foreground mt-2">Add some delicious food to get started!</p>
-                      </div>
-                    ) : (
-                      <div className="space-y-4">
-                        <div className="max-h-[300px] overflow-auto pr-2 space-y-4">
-                          {cart.map((item) => {
-                            const menuItem = menuItems.find((m) => m.id === item.id);
-                            return (
-                              <div key={item.id} className="flex items-center justify-between py-2 border-b last:border-0 border-zinc-100">
-                                <div className="space-y-1">
-                                  <p className="text-sm font-medium">{menuItem?.name}</p>
-                                  <p className="text-xs text-orange-600 font-bold">${menuItem?.price}</p>
-                                </div>
-                                <div className="flex items-center gap-3">
-                                  <Button
-                                    variant="outline"
-                                    size="icon"
-                                    className="h-6 w-6 rounded-full"
-                                    onClick={() => removeFromCart(item.id)}
-                                  >
-                                    <Minus className="h-3 w-3" />
-                                  </Button>
-                                  <span className="text-sm font-bold w-4 text-center">{item.quantity}</span>
-                                  <Button
-                                    variant="outline"
-                                    size="icon"
-                                    className="h-6 w-6 rounded-full"
-                                    onClick={() => addToCart(item.id)}
-                                  >
-                                    <Plus className="h-3 w-3" />
-                                  </Button>
-                                </div>
-                              </div>
-                            );
-                          })}
-                        </div>
-                        <div className="pt-4 space-y-2 border-t border-zinc-100">
-                          <div className="flex justify-between text-sm">
-                            <span className="text-muted-foreground">Subtotal</span>
-                            <span className="font-medium">${cartTotal.toFixed(2)}</span>
-                          </div>
-                          <div className="flex justify-between text-sm">
-                            <span className="text-muted-foreground">Delivery Fee</span>
-                            <span className="font-medium">$5.00</span>
-                          </div>
-                          <div className="flex justify-between text-lg font-bold text-orange-600 pt-2 border-t border-zinc-100">
-                            <span>Total</span>
-                            <span>${(cartTotal + 5).toFixed(2)}</span>
-                          </div>
-                        </div>
-                      </div>
-                    )}
-                  </CardContent>
-                  <CardFooter className="p-6 pt-0">
-                    <Button
-                      className="w-full bg-orange-600 hover:bg-orange-700 text-white h-12 rounded-xl shadow-lg shadow-orange-200 transition-all active:scale-95"
-                      disabled={cart.length === 0 || isPaying}
-                      onClick={handlePayment}
-                    >
-                      {isPaying ? "Processing..." : (
-                        <>
-                          <CreditCard className="h-4 w-4 mr-2" /> Pay Now
-                        </>
-                      )}
-                    </Button>
-                  </CardFooter>
-                </Card>
-              </div>
-            </div>
-          </TabsContent>
-
-          {/* Orders Tab */}
-          <TabsContent value="orders" className="space-y-8 mt-0 outline-none">
-            <div>
-              <h2 className="text-2xl font-bold font-serif">Current Orders</h2>
-              <div className="mt-4 grid gap-6">
-                {currentOrders.map((order) => (
-                  <Card key={order.id} className="border-l-4 border-l-orange-500 shadow-sm border-zinc-200">
-                    <CardContent className="p-6">
-                      <div className="flex flex-col md:flex-row justify-between gap-4">
-                        <div className="space-y-1">
-                          <div className="flex items-center gap-2">
-                            <span className="font-bold text-lg">{order.id}</span>
-                            <Badge className="bg-orange-100 text-orange-700 hover:bg-orange-100 border-none">
-                              {order.status}
-                            </Badge>
-                          </div>
-                          <p className="text-sm text-muted-foreground">{order.items}</p>
-                          <div className="flex items-center gap-4 mt-2">
-                            <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                              <Clock className="h-3 w-3" /> {order.date}
-                            </div>
-                            <div className="flex items-center gap-1 text-xs text-orange-600 font-bold">
-                              Estimated: {order.estimatedArrival}
-                            </div>
-                          </div>
-                        </div>
-                        <div className="text-right">
-                          <p className="text-2xl font-bold text-orange-600">${order.total.toFixed(2)}</p>
-                          <Button variant="outline" size="sm" className="mt-2 border-orange-200 text-orange-600 hover:bg-orange-50">
-                            Track Order
-                          </Button>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            </div>
-
-            <div>
-              <h2 className="text-2xl font-bold font-serif">Order History</h2>
-              <Card className="mt-4 overflow-hidden border-zinc-200 shadow-sm">
-                <div className="overflow-x-auto">
-                  <Table>
-                    <TableHeader className="bg-zinc-50">
-                      <TableRow>
-                        <TableHead className="w-[120px]">Order ID</TableHead>
-                        <TableHead>Date</TableHead>
-                        <TableHead>Items</TableHead>
-                        <TableHead>Total</TableHead>
-                        <TableHead>Status</TableHead>
-                        <TableHead className="text-right">Actions</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {previousOrders.map((order) => (
-                        <TableRow key={order.id}>
-                          <TableCell className="font-medium">{order.id}</TableCell>
-                          <TableCell className="text-muted-foreground">{order.date}</TableCell>
-                          <TableCell className="max-w-[300px] truncate">{order.items}</TableCell>
-                          <TableCell className="font-bold">${order.total.toFixed(2)}</TableCell>
-                          <TableCell>
-                            <Badge variant="secondary" className="bg-green-50 text-green-700 border-none">
-                              <CheckCircle2 className="h-3 w-3 mr-1" /> {order.status}
-                            </Badge>
-                          </TableCell>
-                          <TableCell className="text-right">
-                            <Button variant="ghost" size="sm" className="text-orange-600 hover:text-orange-700 hover:bg-orange-50 font-medium">Reorder</Button>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
+                        {stat.trend === "up" ? (
+                          <TrendingUp className="h-3 w-3 mr-1" />
+                        ) : (
+                          <TrendingDown className="h-3 w-3 mr-1" />
+                        )}
+                        {stat.change}
+                      </Badge>
+                      <span className="text-xs text-muted-foreground">
+                        {stat.description}
+                      </span>
+                    </div>
+                  </div>
                 </div>
-              </Card>
-            </div>
-          </TabsContent>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
 
-          {/* Contact Tab */}
-          <TabsContent value="contact" className="space-y-8 mt-0 outline-none">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <Card className="border-zinc-200 shadow-sm">
-                <CardHeader>
-                  <CardTitle>Send us a Message</CardTitle>
-                  <CardDescription>We'd love to hear your feedback or help with any issues.</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium">Subject</label>
-                    <Input placeholder="What's this about?" className="border-zinc-200" />
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium">Message</label>
-                    <textarea
-                      className="flex min-h-[120px] w-full rounded-md border border-zinc-200 bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-orange-500 disabled:cursor-not-allowed disabled:opacity-50"
-                      placeholder="Tell us how we can help..."
-                    />
-                  </div>
-                </CardContent>
-                <CardFooter>
-                  <Button className="bg-orange-600 hover:bg-orange-700 text-white w-full md:w-auto">Send Message</Button>
-                </CardFooter>
-              </Card>
-
-              <div className="space-y-6">
-                <Card className="bg-zinc-900 text-white border-none overflow-hidden relative">
-                  <div className="absolute top-0 right-0 w-32 h-32 bg-orange-600/10 rounded-full blur-3xl -mr-16 -mt-16"></div>
-                  <CardHeader>
-                    <CardTitle className="text-white">Quick Support</CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-6 relative z-10">
-                    <div className="flex gap-4">
-                      <div className="w-10 h-10 rounded-full bg-orange-600 flex items-center justify-center shrink-0">
-                        <MapPin className="h-5 w-5" />
-                      </div>
-                      <div>
-                        <p className="font-bold">Our Location</p>
-                        <p className="text-zinc-400 text-sm">123 Culinary Avenue, Springfield</p>
-                      </div>
-                    </div>
-                    <div className="flex gap-4">
-                      <div className="w-10 h-10 rounded-full bg-orange-600 flex items-center justify-center shrink-0">
-                        <MessageSquare className="h-5 w-5" />
-                      </div>
-                      <div>
-                        <p className="font-bold">Chat with us</p>
-                        <p className="text-zinc-400 text-sm">Available 10:00 AM - 11:00 PM</p>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                <Card className="border-zinc-200 shadow-sm">
-                  <CardHeader>
-                    <CardTitle>Restaurant Info</CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-3 text-sm">
-                    <div className="flex justify-between py-1 border-b border-zinc-50">
-                      <span className="text-muted-foreground">Manager</span>
-                      <span className="font-medium">Ebba Lands Support Team</span>
-                    </div>
-                    <div className="flex justify-between py-1 border-b border-zinc-50">
-                      <span className="text-muted-foreground">Email</span>
-                      <span className="font-medium">hello@ebbalands.com</span>
-                    </div>
-                    <div className="flex justify-between py-1">
-                      <span className="text-muted-foreground">Phone</span>
-                      <span className="font-medium">+1 (555) 123-4567</span>
-                    </div>
-                  </CardContent>
-                </Card>
+        {/* Charts Row */}
+        <div className="grid gap-4 lg:grid-cols-5">
+          {/* Revenue Forecast */}
+          <Card className="lg:col-span-3 bg-background">
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
+              <div>
+                <CardTitle className="text-base font-semibold">
+                  Revenue Forecast
+                </CardTitle>
               </div>
+              <div className="flex items-center gap-2">
+                <Select defaultValue="monthly">
+                  <SelectTrigger className="w-[100px] h-8 text-xs">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="daily">Daily</SelectItem>
+                    <SelectItem value="weekly">Weekly</SelectItem>
+                    <SelectItem value="monthly">Monthly</SelectItem>
+                  </SelectContent>
+                </Select>
+                <Select defaultValue="contacts">
+                  <SelectTrigger className="w-[100px] h-8 text-xs">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="contacts">Contacts</SelectItem>
+                    <SelectItem value="leads">Leads</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="h-[250px] flex items-end gap-2">
+                {revenueData.map((data, index) => (
+                  <div key={data.month} className="flex-1 flex flex-col items-center gap-2">
+                    <div
+                      className={`w-full rounded-t-md transition-all ${
+                        index === 4
+                          ? "bg-primary"
+                          : "bg-muted hover:bg-muted-foreground/20"
+                      }`}
+                      style={{
+                        height: `${(data.revenue / maxRevenue) * 180}px`,
+                      }}
+                    />
+                    <span className="text-xs text-muted-foreground">
+                      {data.month}
+                    </span>
+                  </div>
+                ))}
+              </div>
+              <div className="flex items-center justify-center gap-6 mt-4 pt-4 border-t">
+                <div className="flex items-center gap-2">
+                  <div className="w-3 h-3 rounded-full bg-primary" />
+                  <span className="text-xs text-muted-foreground">
+                    Sales revenue
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-3 h-3 rounded-full bg-muted" />
+                  <span className="text-xs text-muted-foreground">
+                    Sales revenue
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-3 h-3 rounded-full bg-muted-foreground/30" />
+                  <span className="text-xs text-muted-foreground">
+                    Sales revenue
+                  </span>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Source */}
+          <Card className="lg:col-span-2 bg-background">
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
+              <div>
+                <CardTitle className="text-base font-semibold">Source</CardTitle>
+              </div>
+              <Select defaultValue="contacts">
+                <SelectTrigger className="w-[100px] h-8 text-xs">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="contacts">Contacts</SelectItem>
+                  <SelectItem value="leads">Leads</SelectItem>
+                </SelectContent>
+              </Select>
+            </CardHeader>
+            <CardContent>
+              <div className="flex items-center gap-4 mb-6">
+                <div>
+                  <p className="text-3xl font-bold">12,450</p>
+                  <p className="text-sm text-muted-foreground">Total source</p>
+                </div>
+                <div className="flex gap-1 flex-1">
+                  {sourceData.map((source) => (
+                    <div
+                      key={source.name}
+                      className={`h-8 rounded ${source.color}`}
+                      style={{ width: `${source.percentage}%` }}
+                    />
+                  ))}
+                </div>
+              </div>
+              <div className="space-y-4">
+                {sourceData.map((source) => (
+                  <div key={source.name} className="flex items-center gap-3">
+                    <div className="flex items-center gap-2 flex-1">
+                      {source.name === "Website" && (
+                        <Globe className="h-4 w-4 text-muted-foreground" />
+                      )}
+                      {source.name === "Social Media" && (
+                        <Share2 className="h-4 w-4 text-muted-foreground" />
+                      )}
+                      {source.name === "Email" && (
+                        <Mail className="h-4 w-4 text-muted-foreground" />
+                      )}
+                      {source.name === "Referral" && (
+                        <Users className="h-4 w-4 text-muted-foreground" />
+                      )}
+                      <span className="text-sm">{source.name}</span>
+                    </div>
+                    <span className="text-sm font-medium">
+                      {source.value.toLocaleString()}
+                    </span>
+                    <span className="text-sm text-muted-foreground w-10">
+                      {source.percentage}%
+                    </span>
+                  </div>
+                ))}
+              </div>
+              <Button variant="outline" className="w-full mt-4" size="sm">
+                View Details
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Table */}
+        <Card className="bg-background">
+          <CardHeader className="flex flex-row items-center justify-between">
+            <CardTitle className="text-base font-semibold">
+              Table Data Sales
+            </CardTitle>
+            <div className="flex items-center gap-2">
+              <div className="relative">
+                <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                <Input
+                  placeholder="Search data"
+                  className="pl-8 h-9 w-[200px]"
+                />
+              </div>
+              <Button variant="outline" size="sm">
+                Sort by
+              </Button>
+              <Button variant="outline" size="sm">
+                <Filter className="h-4 w-4 mr-2" />
+                Filter
+              </Button>
             </div>
-          </TabsContent>
-        </Tabs>
-      </div>
+          </CardHeader>
+          <CardContent>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="w-[40px]">
+                    <Checkbox />
+                  </TableHead>
+                  <TableHead>Deal name</TableHead>
+                  <TableHead>Company</TableHead>
+                  <TableHead>Price</TableHead>
+                  <TableHead>Date created</TableHead>
+                  <TableHead>Owner</TableHead>
+                  <TableHead>Stage</TableHead>
+                  <TableHead className="w-[40px]"></TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {salesData.map((sale) => (
+                  <TableRow key={sale.id}>
+                    <TableCell>
+                      <Checkbox />
+                    </TableCell>
+                    <TableCell className="font-medium">
+                      {sale.dealName}
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex items-center gap-2">
+                        <Avatar className="h-6 w-6">
+                          <AvatarFallback className="text-xs bg-muted">
+                            {sale.companyLogo}
+                          </AvatarFallback>
+                        </Avatar>
+                        {sale.company}
+                      </div>
+                    </TableCell>
+                    <TableCell>{sale.price}</TableCell>
+                    <TableCell className="text-muted-foreground">
+                      {sale.dateCreated}
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex items-center gap-2">
+                        <Avatar className="h-6 w-6">
+                          <AvatarFallback className="text-xs bg-primary/10 text-primary">
+                            {sale.ownerAvatar}
+                          </AvatarFallback>
+                        </Avatar>
+                        {sale.owner}
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <Badge
+                        variant="secondary"
+                        className="bg-blue-100 text-blue-700"
+                      >
+                        {sale.stage}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>
+                      <Button variant="ghost" size="icon" className="h-8 w-8">
+                        <MoreHorizontal className="h-4 w-4" />
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
+      </main>
     </div>
   );
 }

@@ -1,7 +1,7 @@
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { db } from "@/db/drizzle";
-import { user, session, account, verification } from "@/db/schema";
+import { db } from "@/database/db";
+import { user, session, account, verification } from "@/database/schema";
 import { emailOTP } from "better-auth/plugins";
 import { sendVerificationEmail, sendResetPasswordEmail } from "./email";
 
@@ -12,7 +12,7 @@ export const auth = betterAuth({
       user: user,
       session: session,
       account: account,
-      verification: verification,
+      verification: verification, // ✅ Include verification
     },
   }),
   emailAndPassword: {

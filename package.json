@@ -1,5 +1,5 @@
 {
-  "name": "ebba-lands",
+  "name": "land-trcker",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -11,15 +11,15 @@
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
     "@neondatabase/serverless": "^1.0.2",
-    "@prisma/adapter-pg": "^7.5.0",
+    "@prisma/adapter-neon": "^7.4.0",
     "@react-email/components": "^1.0.7",
     "better-auth": "^1.4.18",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
-    "dotenv": "^17.3.1",
+    "dotenv": "^17.2.4",
     "drizzle-orm": "^0.45.1",
     "input-otp": "^1.4.2",
-    "lucide-react": "^0.564.0",
+    "lucide-react": "^0.563.0",
     "next": "16.1.6",
     "pg": "^8.18.0",
     "radix-ui": "^1.4.3",

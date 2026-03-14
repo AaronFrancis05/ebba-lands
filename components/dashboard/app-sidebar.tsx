@@ -3,13 +3,17 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
-  Utensils,
-  History,
-  MessageSquare,
+  LayoutDashboard,
+  Users,
+  Building2,
+  Handshake,
+  CheckSquare,
+  Package,
+  Mail,
+  Puzzle,
   Settings,
   ChevronLeft,
-  LayoutDashboard,
-  ShoppingCart,
+  User,
 } from "lucide-react";
 
 import {
@@ -32,23 +36,51 @@ import { cn } from "@/lib/utils";
 
 const mainMenuItems = [
   {
-    title: "Master Menu",
+    title: "Dashboard",
     url: "/dashboard",
-    icon: Utensils,
+    icon: LayoutDashboard,
   },
   {
-    title: "My Orders",
-    url: "/dashboard/orders",
-    icon: History,
+    title: "Contacts",
+    url: "/dashboard/contacts",
+    icon: Users,
   },
   {
-    title: "Contact Us",
-    url: "/dashboard/contact",
-    icon: MessageSquare,
+    title: "Companies",
+    url: "/dashboard/companies",
+    icon: Building2,
+  },
+  {
+    title: "Deals",
+    url: "/dashboard/deals",
+    icon: Handshake,
+  },
+  {
+    title: "Tasks",
+    url: "/dashboard/tasks",
+    icon: CheckSquare,
+  },
+];
+
+const marketingItems = [
+  {
+    title: "Products",
+    url: "/dashboard/products",
+    icon: Package,
+  },
+  {
+    title: "Emails",
+    url: "/dashboard/emails",
+    icon: Mail,
   },
 ];
 
 const preferencesItems = [
+  {
+    title: "Integrations",
+    url: "/dashboard/integrations",
+    icon: Puzzle,
+  },
   {
     title: "Settings",
     url: "/dashboard/settings",
@@ -79,12 +111,12 @@ export function AppSidebar({ user }: AppSidebarProps) {
     <Sidebar collapsible="icon" className="border-r bg-background">
       <SidebarHeader className="border-b px-4 py-3">
         <div className="flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-orange-600 text-white font-bold">
-              <Utensils className="h-5 w-5" />
+          <Link href="/dashboard" className="flex items-center gap-2">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground font-bold">
+              JB
             </div>
             {!isCollapsed && (
-              <span className="font-serif font-bold text-lg text-orange-600">Ebba Lands</span>
+              <span className="font-semibold text-lg">Better Auth</span>
             )}
           </Link>
           {!isCollapsed && (
@@ -103,7 +135,7 @@ export function AppSidebar({ user }: AppSidebarProps) {
       <SidebarContent className="px-2">
         <SidebarGroup>
           <SidebarGroupLabel className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-            Restaurant
+            Main Menu
           </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
@@ -116,7 +148,7 @@ export function AppSidebar({ user }: AppSidebarProps) {
                     className={cn(
                       "transition-colors",
                       pathname === item.url &&
-                        "bg-orange-600 text-white hover:bg-orange-700 hover:text-white"
+                        "bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground"
                     )}
                   >
                     <Link href={item.url}>
@@ -132,7 +164,36 @@ export function AppSidebar({ user }: AppSidebarProps) {
 
         <SidebarGroup>
           <SidebarGroupLabel className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-            Account
+            Marketing
+          </SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {marketingItems.map((item) => (
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton
+                    asChild
+                    isActive={pathname === item.url}
+                    tooltip={item.title}
+                    className={cn(
+                      "transition-colors",
+                      pathname === item.url &&
+                        "bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground"
+                    )}
+                  >
+                    <Link href={item.url}>
+                      <item.icon className="h-4 w-4" />
+                      <span>{item.title}</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        <SidebarGroup>
+          <SidebarGroupLabel className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+            Preferences
           </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
@@ -145,7 +206,7 @@ export function AppSidebar({ user }: AppSidebarProps) {
                     className={cn(
                       "transition-colors",
                       pathname === item.url &&
-                        "bg-orange-600 text-white hover:bg-orange-700 hover:text-white"
+                        "bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground"
                     )}
                   >
                     <Link href={item.url}>
@@ -162,13 +223,13 @@ export function AppSidebar({ user }: AppSidebarProps) {
 
       <SidebarFooter className="border-t p-4">
         {!isCollapsed && (
-          <div className="mb-4 rounded-lg bg-orange-50 p-3 border border-orange-100">
-            <p className="text-xs text-orange-800 font-bold mb-1">VIP Member</p>
-            <p className="text-[11px] text-orange-700 mb-2">
-              You've placed 12 orders this month! Enjoy free delivery on your next order.
+          <div className="mb-4 rounded-lg bg-muted p-3">
+            <p className="text-xs text-muted-foreground mb-1">20 days left</p>
+            <p className="text-xs text-muted-foreground mb-2">
+              Upgrade to premium and enjoy the benefits for a long time.
             </p>
-            <Button size="sm" variant="outline" className="w-full text-xs border-orange-200 text-orange-700 hover:bg-orange-100">
-              View Rewards
+            <Button size="sm" variant="outline" className="w-full text-xs">
+              View plan
             </Button>
           </div>
         )}
