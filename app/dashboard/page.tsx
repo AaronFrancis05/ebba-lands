@@ -50,23 +50,23 @@ import { LogoutButton } from "@/components/auth/logout-button";
 
 const stats = [
   {
-    title: "Total Sales",
-    value: "$18,200",
-    change: "+10.2%",
+    title: "Total Revenue",
+    value: "UGX 1,280,000",
+    change: "+12.2%",
     trend: "up",
     description: "vs last month",
   },
   {
-    title: "Operating Expenses",
-    value: "$18,200",
-    change: "-5.75%",
-    trend: "down",
+    title: "Orders Processed",
+    value: "156",
+    change: "+8.5%",
+    trend: "up",
     description: "vs last month",
   },
   {
-    title: "Gross Profit",
-    value: "$18,200",
-    change: "+8.65%",
+    title: "Active Customers",
+    value: "420",
+    change: "+4.2%",
     trend: "up",
     description: "vs last month",
   },
@@ -94,36 +94,33 @@ const revenueData = [
 const salesData = [
   {
     id: 1,
-    dealName: "Bargain Bonanza",
-    company: "Amazon.com, Inc",
-    companyLogo: "A",
-    price: "$850,000.00",
-    dateCreated: "Mon, 12 April 2025",
-    owner: "Jenny Wilson",
-    ownerAvatar: "JW",
-    stage: "New",
+    orderId: "#EB-84920",
+    customer: "Jenny Wilson",
+    customerAvatar: "JW",
+    total: "UGX 56,000",
+    date: "15 March 2026, 10:24 AM",
+    type: "Delivery",
+    status: "Preparing",
   },
   {
     id: 2,
-    dealName: "Discount Delights",
-    company: "Xiaomi Corporation",
-    companyLogo: "X",
-    price: "$990,000.00",
-    dateCreated: "Mon, 11 April 2025",
-    owner: "Leslie Alexander",
-    ownerAvatar: "LA",
-    stage: "New",
+    orderId: "#EB-84921",
+    customer: "Leslie Alexander",
+    customerAvatar: "LA",
+    total: "UGX 32,000",
+    date: "15 March 2026, 10:15 AM",
+    type: "Pickup",
+    status: "Received",
   },
   {
     id: 3,
-    dealName: "Price Slayers",
-    company: "Apple, Inc",
-    companyLogo: "A",
-    price: "$450,000.00",
-    dateCreated: "Mon, 11 April 2025",
-    owner: "Cody Fisher",
-    ownerAvatar: "CF",
-    stage: "New",
+    orderId: "#EB-84922",
+    customer: "Cody Fisher",
+    customerAvatar: "CF",
+    total: "UGX 124,000",
+    date: "15 March 2026, 09:45 AM",
+    type: "Delivery",
+    status: "Out for Delivery",
   },
 ];
 
@@ -132,65 +129,28 @@ export default function DashboardPage() {
   const maxRevenue = Math.max(...revenueData.map((d) => d.revenue));
 
   return (
-    <div className="flex flex-col min-h-screen">
-      {/* Header */}
-      <header className="flex h-16 items-center justify-between border-b bg-background px-6">
-        <div className="flex items-center gap-4">
-          <SidebarTrigger className="-ml-2" />
-          <Separator orientation="vertical" className="h-6" />
-          <h1 className="text-xl font-semibold">Dashboard</h1>
-        </div>
-        <div className="flex items-center gap-4">
-          <Button variant="ghost" size="icon">
-            <HelpCircle className="h-5 w-5 text-muted-foreground" />
+    <div className="space-y-6">
+      {/* Tabs */}
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <Tabs value={selectedTab} onValueChange={setSelectedTab} className="w-full sm:w-auto">
+          <TabsList className="bg-muted/50 w-full sm:w-auto">
+            <TabsTrigger value="overview" className="flex-1 sm:flex-none">Overview</TabsTrigger>
+            <TabsTrigger value="sales" className="flex-1 sm:flex-none">Sales</TabsTrigger>
+            <TabsTrigger value="order" className="flex-1 sm:flex-none">Order</TabsTrigger>
+            <TabsTrigger value="report" className="flex-1 sm:flex-none">Report</TabsTrigger>
+          </TabsList>
+        </Tabs>
+        <div className="flex items-center gap-2 self-end sm:self-auto">
+          <Button variant="outline" size="sm">
+            <Filter className="h-4 w-4 mr-2" />
+            Filter
           </Button>
-          <Button variant="ghost" size="icon">
-            <Search className="h-5 w-5 text-muted-foreground" />
+          <Button size="sm" className="bg-orange-500 hover:bg-orange-600">
+            <Download className="h-4 w-4 mr-2" />
+            Export
           </Button>
-          <div className="flex -space-x-2">
-            <Avatar className="h-8 w-8 border-2 border-background">
-              <AvatarFallback className="bg-orange-100 text-orange-600 text-xs">
-                JD
-              </AvatarFallback>
-            </Avatar>
-            <Avatar className="h-8 w-8 border-2 border-background">
-              <AvatarFallback className="bg-blue-100 text-blue-600 text-xs">
-                AB
-              </AvatarFallback>
-            </Avatar>
-            <Avatar className="h-8 w-8 border-2 border-background">
-              <AvatarFallback className="bg-green-100 text-green-600 text-xs">
-                CD
-              </AvatarFallback>
-            </Avatar>
-          </div>
-          <LogoutButton variant="outline" size="sm" />
         </div>
-      </header>
-
-      {/* Main Content */}
-      <main className="flex-1 p-6 space-y-6">
-        {/* Tabs */}
-        <div className="flex items-center justify-between">
-          <Tabs value={selectedTab} onValueChange={setSelectedTab}>
-            <TabsList className="bg-muted/50">
-              <TabsTrigger value="overview">Overview</TabsTrigger>
-              <TabsTrigger value="sales">Sales</TabsTrigger>
-              <TabsTrigger value="order">Order</TabsTrigger>
-              <TabsTrigger value="report">Report</TabsTrigger>
-            </TabsList>
-          </Tabs>
-          <div className="flex items-center gap-2">
-            <Button variant="outline" size="sm">
-              <Filter className="h-4 w-4 mr-2" />
-              Filter
-            </Button>
-            <Button size="sm" className="bg-orange-500 hover:bg-orange-600">
-              <Download className="h-4 w-4 mr-2" />
-              Export
-            </Button>
-          </div>
-        </div>
+      </div>
 
         {/* Stats Cards */}
         <div className="grid gap-4 md:grid-cols-3">
@@ -390,19 +350,16 @@ export default function DashboardPage() {
         <Card className="bg-background">
           <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle className="text-base font-semibold">
-              Table Data Sales
+              Recent Orders
             </CardTitle>
             <div className="flex items-center gap-2">
               <div className="relative">
                 <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                 <Input
-                  placeholder="Search data"
+                  placeholder="Search orders"
                   className="pl-8 h-9 w-[200px]"
                 />
               </div>
-              <Button variant="outline" size="sm">
-                Sort by
-              </Button>
               <Button variant="outline" size="sm">
                 <Filter className="h-4 w-4 mr-2" />
                 Filter
@@ -416,12 +373,12 @@ export default function DashboardPage() {
                   <TableHead className="w-[40px]">
                     <Checkbox />
                   </TableHead>
-                  <TableHead>Deal name</TableHead>
-                  <TableHead>Company</TableHead>
-                  <TableHead>Price</TableHead>
-                  <TableHead>Date created</TableHead>
-                  <TableHead>Owner</TableHead>
-                  <TableHead>Stage</TableHead>
+                  <TableHead>Order ID</TableHead>
+                  <TableHead>Customer</TableHead>
+                  <TableHead>Total</TableHead>
+                  <TableHead>Date</TableHead>
+                  <TableHead>Type</TableHead>
+                  <TableHead>Status</TableHead>
                   <TableHead className="w-[40px]"></TableHead>
                 </TableRow>
               </TableHeader>
@@ -432,38 +389,35 @@ export default function DashboardPage() {
                       <Checkbox />
                     </TableCell>
                     <TableCell className="font-medium">
-                      {sale.dealName}
+                      {sale.orderId}
                     </TableCell>
                     <TableCell>
                       <div className="flex items-center gap-2">
                         <Avatar className="h-6 w-6">
-                          <AvatarFallback className="text-xs bg-muted">
-                            {sale.companyLogo}
+                          <AvatarFallback className="text-xs bg-orange-100 text-orange-600">
+                            {sale.customerAvatar}
                           </AvatarFallback>
                         </Avatar>
-                        {sale.company}
+                        {sale.customer}
                       </div>
                     </TableCell>
-                    <TableCell>{sale.price}</TableCell>
+                    <TableCell>{sale.total}</TableCell>
                     <TableCell className="text-muted-foreground">
-                      {sale.dateCreated}
+                      {sale.date}
                     </TableCell>
                     <TableCell>
-                      <div className="flex items-center gap-2">
-                        <Avatar className="h-6 w-6">
-                          <AvatarFallback className="text-xs bg-primary/10 text-primary">
-                            {sale.ownerAvatar}
-                          </AvatarFallback>
-                        </Avatar>
-                        {sale.owner}
-                      </div>
+                      <Badge variant="outline">{sale.type}</Badge>
                     </TableCell>
                     <TableCell>
                       <Badge
                         variant="secondary"
-                        className="bg-blue-100 text-blue-700"
+                        className={`${
+                          sale.status === "Received" ? "bg-blue-100 text-blue-700" :
+                          sale.status === "Preparing" ? "bg-yellow-100 text-yellow-700" :
+                          "bg-green-100 text-green-700"
+                        }`}
                       >
-                        {sale.stage}
+                        {sale.status}
                       </Badge>
                     </TableCell>
                     <TableCell>
@@ -477,7 +431,6 @@ export default function DashboardPage() {
             </Table>
           </CardContent>
         </Card>
-      </main>
     </div>
   );
 }

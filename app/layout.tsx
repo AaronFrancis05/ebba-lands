@@ -6,8 +6,8 @@ import { Toaster } from "sonner";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "My App",
-  description: "My application with Better Auth",
+  title: "Savour | Modern Culinary Excellence",
+  description: "Experience modern culinary excellence rooted in tradition at Savour Restaurant.",
 };
 
 export default function RootLayout({

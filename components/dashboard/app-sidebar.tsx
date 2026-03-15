@@ -14,6 +14,7 @@ import {
   Settings,
   ChevronLeft,
   User,
+  Utensils
 } from "lucide-react";
 
 import {
@@ -36,41 +37,31 @@ import { cn } from "@/lib/utils";
 
 const mainMenuItems = [
   {
-    title: "Dashboard",
+    title: "Overview",
     url: "/dashboard",
     icon: LayoutDashboard,
   },
   {
-    title: "Contacts",
-    url: "/dashboard/contacts",
+    title: "Orders",
+    url: "/dashboard/orders",
+    icon: Package,
+  },
+  {
+    title: "Menu Management",
+    url: "/dashboard/menu",
+    icon: Utensils,
+  },
+  {
+    title: "Customers",
+    url: "/dashboard/customers",
     icon: Users,
-  },
-  {
-    title: "Companies",
-    url: "/dashboard/companies",
-    icon: Building2,
-  },
-  {
-    title: "Deals",
-    url: "/dashboard/deals",
-    icon: Handshake,
-  },
-  {
-    title: "Tasks",
-    url: "/dashboard/tasks",
-    icon: CheckSquare,
   },
 ];
 
 const marketingItems = [
   {
-    title: "Products",
-    url: "/dashboard/products",
-    icon: Package,
-  },
-  {
-    title: "Emails",
-    url: "/dashboard/emails",
+    title: "Promotions",
+    url: "/dashboard/promotions",
     icon: Mail,
   },
 ];
@@ -108,30 +99,17 @@ export function AppSidebar({ user }: AppSidebarProps) {
     .toUpperCase() || "U";
 
   return (
-    <Sidebar collapsible="icon" className="border-r bg-background">
-      <SidebarHeader className="border-b px-4 py-3">
-        <div className="flex items-center justify-between">
-          <Link href="/dashboard" className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground font-bold">
-              JB
-            </div>
-            {!isCollapsed && (
-              <span className="font-semibold text-lg">Better Auth</span>
-            )}
-          </Link>
+    <Sidebar collapsible="icon" className="border-r bg-background/50 backdrop-blur-xl">
+      <SidebarHeader className="h-16 flex items-center justify-center border-b">
+        <Link href="/dashboard" className="flex items-center gap-2 px-2">
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+            <Building2 className="h-5 w-5" />
+          </div>
           {!isCollapsed && (
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-8 w-8"
-              onClick={toggleSidebar}
-            >
-              <ChevronLeft className="h-4 w-4" />
-            </Button>
+            <span className="text-xl font-bold tracking-tight">Ebba Lands</span>
           )}
-        </div>
+        </Link>
       </SidebarHeader>
-
       <SidebarContent className="px-2">
         <SidebarGroup>
           <SidebarGroupLabel className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
